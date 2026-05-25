@@ -1,0 +1,39 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka
+  namespace: qatra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka
+  template:
+    metadata:
+      labels:
+        app: kafka
+    spec:
+      containers:
+        - name: kafka
+          image: confluentinc/cp-kafka:7.6.0
+          ports:
+            - containerPort: 9094
+          env:
+            - name: KAFKA_NODE_ID
+              value: "1"
+            - name: KAFKA_PROCESS_ROLES
+              value: broker,controller
+            - name: KAFKA_ADVERTISED_LISTENERS
+              value: PLAINTEXT://kafka:9094
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka
+  namespace: qatra
+spec:
+  selector:
+    app: kafka
+  ports:
+    - port: 9094
+      targetPort: 9094
