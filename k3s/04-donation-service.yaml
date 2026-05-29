@@ -1,0 +1,40 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: donation-service
+  namespace: qatra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: donation-service
+  template:
+    metadata:
+      labels:
+        app: donation-service
+    spec:
+      containers:
+        - name: donation-service
+          image: qatra/donation-service:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://postgres:5432/qatra
+            - name: SPRING_DATASOURCE_USERNAME
+              value: qatra
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: qatra
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: donation-service
+  namespace: qatra
+spec:
+  selector:
+    app: donation-service
+  ports:
+    - port: 8081
+      targetPort: 8081
