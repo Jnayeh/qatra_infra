@@ -1,9 +1,22 @@
-﻿apiVersion: apps/v1
-kind: Deployment
+﻿apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-init
+  namespace: qatra
+data:
+  init.sql: |
+    CREATE USER qatra WITH PASSWORD 'qatra';
+    CREATE DATABASE qatra OWNER qatra;
+    CREATE USER qatra_notification WITH PASSWORD 'qatra_notification';
+    CREATE DATABASE qatra_notification OWNER qatra_notification;
+---
+apiVersion: apps/v1
+kind: StatefulSet
 metadata:
   name: postgres
   namespace: qatra
 spec:
+  serviceName: postgres
   replicas: 1
   selector:
     matchLabels:
@@ -23,6 +36,33 @@ spec:
               value: postgres
             - name: POSTGRES_PASSWORD
               value: postgres
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+            - name: init-scripts
+              mountPath: /docker-entrypoint-initdb.d
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "postgres"]
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            exec:
+              command: ["pg_isready", "-U", "postgres"]
+            initialDelaySeconds: 15
+            periodSeconds: 20
+      volumes:
+        - name: init-scripts
+          configMap:
+            name: postgres-init
+  volumeClaimTemplates:
+    - metadata:
+        name: postgres-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
 ---
 apiVersion: v1
 kind: Service
@@ -35,3 +75,4 @@ spec:
   ports:
     - port: 5432
       targetPort: 5432
+  clusterIP: None
