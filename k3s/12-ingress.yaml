@@ -1,0 +1,90 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: api-ingress
+  namespace: qatra
+spec:
+  entryPoints:
+    - websecure
+  routes:
+
+    - match: Host(`api.zayenha.app`) && PathPrefix(`/api/v1/notifications`)
+      kind: Rule
+      priority: 10
+      services:
+        - name: notification-service
+          port: 8082
+
+    - match: Host(`api.zayenha.app`) && PathPrefix(`/api/v1`)
+      kind: Rule
+      services:
+        - name: donation-service
+          port: 8080
+
+    - match: Host(`api.zayenha.app`) && PathPrefix(`/ws`)
+      kind: Rule
+      services:
+        - name: notification-service
+          port: 8081
+  tls:
+    certResolver: letsencrypt
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: grafana-ingress
+  namespace: qatra
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`grafana.zayenha.app`)
+      kind: Rule
+      services:
+        - name: grafana
+          port: 3000
+      middlewares:
+        - name: monitoring-basic-auth
+          namespace: qatra
+  tls:
+    certResolver: letsencrypt
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: jaeger-ingress
+  namespace: qatra
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`jaeger.zayenha.app`)
+      kind: Rule
+      services:
+        - name: jaeger
+          port: 16686
+      middlewares:
+        - name: monitoring-basic-auth
+          namespace: qatra
+  tls:
+    certResolver: letsencrypt
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: redisinsight-ingress
+  namespace: qatra
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`redis.zayenha.app`)
+      kind: Rule
+      services:
+        - name: redisinsight
+          port: 8001
+      middlewares:
+        - name: monitoring-basic-auth
+          namespace: qatra
+  tls:
+    certResolver: letsencrypt

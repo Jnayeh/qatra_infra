@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: monitoring-auth
+  namespace: qatra
+type: Opaque
+stringData:
+  auth: |
+    admin:{SHA}0DPiKuNIrr5DUM/zqzigLKa4gaY=
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: monitoring-basic-auth
+  namespace: qatra
+spec:
+  basicAuth:
+    secret: monitoring-auth
+    removeHeader: true
