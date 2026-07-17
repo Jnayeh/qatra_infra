@@ -6,9 +6,9 @@ metadata:
 data:
   init.sql: |
     CREATE USER qatra WITH PASSWORD 'qatra';
-    CREATE DATABASE qatra OWNER qatra;
+    CREATE DATABASE mourad OWNER mourad;
     CREATE USER qatra_notification WITH PASSWORD 'qatra_notification';
-    CREATE DATABASE qatra_notification OWNER qatra_notification;
+    CREATE DATABASE mourad OWNER mourad;
 ---
 apiVersion: apps/v1
 kind: StatefulSet
