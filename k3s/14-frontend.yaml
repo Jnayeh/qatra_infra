@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  namespace: qatra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: qatra-frontend:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  namespace: qatra
+spec:
+  selector:
+    app: frontend
+  ports:
+    - port: 80
+      targetPort: 80
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: frontend-ingress
+  namespace: qatra
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`qatra.zayenha.app`)
+      kind: Rule
+      services:
+        - name: frontend
+          port: 80
+  tls:
+    certResolver: letsencrypt

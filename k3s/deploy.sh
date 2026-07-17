@@ -3,7 +3,7 @@ set -e
 
 NAMESPACE="qatra"
 K3S_DIR="$(cd "$(dirname "$0")" && pwd)"
-PROJECT_ROOT="$(cd "$K3S_DIR/.." && pwd)"
+PROJECT_ROOT="$(cd "$K3S_DIR/.." && pwd)/Qatra"
 
 echo "============================================"
 echo "  Qatra k3s Deployment"
@@ -39,7 +39,7 @@ metadata:
 spec:
   acme:
     server: https://acme-v02.api.letsencrypt.org/directory
-    email: your-email@zayenha.app
+    email: no-reply.qatra@zayenha.app
     privateKeySecretRef:
       name: letsencrypt-account-key
     solvers:
@@ -126,7 +126,8 @@ echo "============================================"
 echo "  Deployment Complete!"
 echo "============================================"
 echo ""
-echo "  API:          https://api.zayenha.app"
+echo "  API:          https://qatra-api.zayenha.app"
+echo "  WebSocket:    https://qatra-ws.zayenha.app"
 echo "  Grafana:      https://grafana.zayenha.app  (user: admin / pass: admin)"
 echo "  Jaeger:       https://jaeger.zayenha.app"
 echo "  Redis:        https://redis.zayenha.app"
@@ -136,7 +137,8 @@ echo "    kubectl port-forward -n qatra svc/prometheus 9090:9090"
 echo ""
 echo "  DNS Setup (DigitalOcean):"
 echo "    A records → $(curl -s ifconfig.me):"
-echo "    - api.zayenha.app"
+echo "    - qatra-api.zayenha.app"
+echo "    - qatra-ws.zayenha.app"
 echo "    - qatra.zayenha.app"
 echo "    - grafana.zayenha.app"
 echo "    - jaeger.zayenha.app"

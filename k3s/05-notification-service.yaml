@@ -16,7 +16,7 @@ data:
 
   SPRING_MAIN_ALLOW_BEAN_DEFINITION_OVERRIDING: "true"
 
-  CORS_ALLOWED_ORIGINS: https://qatra.zayenha.app
+  CORS_ALLOWED_ORIGINS: https://qatra.zayenha.app,https://qatra-api.zayenha.app,https://qatra-ws.zayenha.app
 ---
 apiVersion: apps/v1
 kind: Deployment

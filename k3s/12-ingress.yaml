@@ -8,20 +8,31 @@ spec:
     - websecure
   routes:
 
-    - match: Host(`api.zayenha.app`) && PathPrefix(`/api/v1/notifications`)
+    - match: Host(`qatra-api.zayenha.app`) && PathPrefix(`/api/v1/notifications`)
       kind: Rule
       priority: 10
       services:
         - name: notification-service
           port: 8082
 
-    - match: Host(`api.zayenha.app`) && PathPrefix(`/api/v1`)
+    - match: Host(`qatra-api.zayenha.app`) && PathPrefix(`/api/v1`)
       kind: Rule
       services:
         - name: donation-service
           port: 8080
-
-    - match: Host(`api.zayenha.app`) && PathPrefix(`/ws`)
+  tls:
+    certResolver: letsencrypt
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ws-ingress
+  namespace: qatra
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`qatra-ws.zayenha.app`) && PathPrefix(`/ws`)
       kind: Rule
       services:
         - name: notification-service
