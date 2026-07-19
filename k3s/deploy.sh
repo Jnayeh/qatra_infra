@@ -3,7 +3,6 @@ set -e
 
 NAMESPACE="qatra"
 K3S_DIR="$(cd "$(dirname "$0")" && pwd)"
-PROJECT_ROOT="$(cd "$K3S_DIR/.." && pwd)/Qatra"
 
 echo "============================================"
 echo "  Qatra k3s Deployment"
@@ -59,18 +58,18 @@ else
 fi
 
 echo ""
-echo "[2/8] Building Docker images..."
+echo "[2/8] Importing Docker images into k3s..."
 
+GHCR_OWNER=$(echo "${GHCR_OWNER:-jnayeh}" | tr '[:upper:]' '[:lower:]')
 
-echo "  -> Building donation-service..."
-docker build -t qatra/donation-service:latest "$PROJECT_ROOT/donation-service"
-echo "  -> Importing donation-service into k3s..."
+echo "  -> Pulling donation-service from ghcr.io..."
+docker pull "ghcr.io/$GHCR_OWNER/qatra-donation:latest"
+docker tag "ghcr.io/$GHCR_OWNER/qatra-donation:latest" qatra/donation-service:latest
 docker save qatra/donation-service:latest | k3s ctr images import -
 
-
-echo "  -> Building notification-service..."
-docker build -t qatra/notification-service:latest "$PROJECT_ROOT/notification-service"
-echo "  -> Importing notification-service into k3s..."
+echo "  -> Pulling notification-service from ghcr.io..."
+docker pull "ghcr.io/$GHCR_OWNER/qatra-notification:latest"
+docker tag "ghcr.io/$GHCR_OWNER/qatra-notification:latest" qatra/notification-service:latest
 docker save qatra/notification-service:latest | k3s ctr images import -
 
 echo ""
