@@ -16,11 +16,25 @@ data:
   SPRING_DATA_REDIS_PORT: "6379"
   SPRING_CACHE_TYPE: redis
 
+  SPRING_DEVTOOLS_RESTART: "false"
+  SPRING_DEVTOOLS_LIVERELOAD: "false"
+
+  KAFKA_TOPIC_PASSWORD_RESET: password.reset
+  KAFKA_TOPIC_EMAIL_VERIFICATION: email.verification
+  KAFKA_TOPIC_NOTIFICATION_RESULT: notification.result
+  KAFKA_TOPIC_ELIGIBILITY_REMINDER: eligibility.reminder
+
   JWT_SECRET: QatraSecretKeyMustBeAtLeast256BitsLongForHS256AlgorithmMinimum
 
   CORS_ALLOWED_ORIGINS: https://qatra-app.zayenha.app,https://qatra-api.zayenha.app,https://qatra-ws.zayenha.app
 
+  OTEL_SERVICE_NAME: donation-service
+  OTEL_TRACES_SAMPLER: parentbased_traceidratio
+  OTEL_TRACES_SAMPLER_ARG: "1.0"
   OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318
+  OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
+  OTEL_LOGS_EXPORTER: none
+  OTEL_METRICS_EXPORTER: none
 ---
 apiVersion: apps/v1
 kind: Deployment

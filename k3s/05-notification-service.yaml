@@ -12,13 +12,39 @@ data:
 
   SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka-0.kafka.qatra.svc.cluster.local:9092
 
+  SPRING_DEVTOOLS_RESTART: "false"
+  SPRING_DEVTOOLS_LIVERELOAD: "false"
+
+  KAFKA_TOPIC_NOTIFICATION_RESULT: notification.result
+
   JWT_SECRET: QatraSecretKeyMustBeAtLeast256BitsLongForHS256AlgorithmMinimum
 
   SPRING_MAIN_ALLOW_BEAN_DEFINITION_OVERRIDING: "true"
 
   CORS_ALLOWED_ORIGINS: https://qatra-app.zayenha.app,https://qatra-api.zayenha.app,https://qatra-ws.zayenha.app
 
+  EMAIL_CHANNEL_PROVIDER: resend
+  GMAIL_SMTP_HOST: ""
+  GMAIL_USERNAME: ""
+
+  OTEL_SERVICE_NAME: notification-service
+  OTEL_TRACES_SAMPLER: parentbased_traceidratio
+  OTEL_TRACES_SAMPLER_ARG: "1.0"
   OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318
+  OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
+  OTEL_LOGS_EXPORTER: none
+  OTEL_METRICS_EXPORTER: none
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: notification-service-secrets
+  namespace: qatra
+type: Opaque
+stringData:
+  RESEND_API_KEY: re_...
+  EMAIL_CHANNEL_FROM: noreply.qatra@zayenha.app
+  GMAIL_APP_PASSWORD: ""
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -44,6 +70,8 @@ spec:
           envFrom:
             - configMapRef:
                 name: notification-service-config
+            - secretRef:
+                name: notification-service-secrets
           readinessProbe:
             httpGet:
               path: /actuator/health
