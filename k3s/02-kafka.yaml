@@ -44,7 +44,7 @@ spec:
             - name: KAFKA_TRANSACTION_STATE_LOG_MIN_ISR
               value: "1"
             - name: CLUSTER_ID
-              value: 970e271c-97f7-4e48-b520-6b6380c75335
+              value: lQ4nHJn3TkS1IGtmNgMn5A
           readinessProbe:
             exec:
               command: ["kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]

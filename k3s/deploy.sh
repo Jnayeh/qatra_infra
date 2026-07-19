@@ -9,6 +9,12 @@ echo "============================================"
 echo "  Qatra k3s Deployment"
 echo "============================================"
 
+if ! command -v helm &> /dev/null; then
+    echo "ERROR: helm not found. Install with:"
+    echo "  curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash"
+    exit 1
+fi
+
 if ! command -v k3s &> /dev/null; then
     echo "ERROR: k3s not found. Install with:"
     echo "  curl -sfL https://get.k3s.io | sh -"
@@ -21,7 +27,7 @@ if ! k3s kubectl get nodes &> /dev/null; then
 fi
 
 echo ""
-echo "[1/7] Installing cert-manager..."
+echo "[1/8] Installing cert-manager..."
 
 
 if ! k3s kubectl get namespace cert-manager &> /dev/null 2>&1; then
@@ -53,7 +59,7 @@ else
 fi
 
 echo ""
-echo "[2/7] Building Docker images..."
+echo "[2/8] Building Docker images..."
 
 
 echo "  -> Building donation-service..."
@@ -68,11 +74,11 @@ echo "  -> Importing notification-service into k3s..."
 docker save qatra/notification-service:latest | k3s ctr images import -
 
 echo ""
-echo "[3/7] Creating namespace..."
+echo "[3/8] Creating namespace..."
 k3s kubectl apply -f "$K3S_DIR/00-namespace.yaml"
 
 echo ""
-echo "[4/7] Deploying infrastructure..."
+echo "[4/8] Deploying infrastructure..."
 
 echo "  -> Postgres..."
 k3s kubectl apply -f "$K3S_DIR/01-postgres.yaml"
@@ -90,7 +96,7 @@ echo "  -> Waiting for Redis..."
 k3s kubectl wait --for=condition=ready pod -l app=redis -n $NAMESPACE --timeout=60s
 
 echo ""
-echo "[5/7] Deploying application services..."
+echo "[5/8] Deploying application services..."
 
 echo "  -> Donation Service..."
 k3s kubectl apply -f "$K3S_DIR/04-donation-service.yaml"
@@ -103,7 +109,7 @@ echo "  -> Waiting for Notification Service..."
 k3s kubectl wait --for=condition=ready pod -l app=notification-service -n $NAMESPACE --timeout=180s
 
 echo ""
-echo "[6/7] Deploying monitoring stack..."
+echo "[6/8] Deploying monitoring stack..."
 
 k3s kubectl apply -f "$K3S_DIR/06-jaeger.yaml"
 k3s kubectl apply -f "$K3S_DIR/07-prometheus.yaml"
@@ -117,9 +123,24 @@ k3s kubectl wait --for=condition=ready pod -l app=jaeger -n $NAMESPACE --timeout
 k3s kubectl wait --for=condition=ready pod -l app=grafana -n $NAMESPACE --timeout=120s
 
 echo ""
-echo "[7/7] Configuring ingress..."
+echo "[7/8] Configuring ingress..."
 k3s kubectl apply -f "$K3S_DIR/13-auth-middleware.yaml"
 k3s kubectl apply -f "$K3S_DIR/12-ingress.yaml"
+
+echo ""
+echo "[8/8] Deploying Kubernetes Dashboard..."
+
+echo "  -> Adding Helm repo..."
+helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
+helm repo update
+
+echo "  -> Installing dashboard via Helm..."
+helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard \
+  --create-namespace --namespace kubernetes-dashboard \
+  --set app.ingress.enabled=false
+
+echo "  -> Applying RBAC and IngressRoute..."
+k3s kubectl apply -f "$K3S_DIR/14-kubernetes-dashboard.yaml"
 
 echo ""
 echo "============================================"
@@ -132,6 +153,10 @@ echo "  Grafana:      https://qatra-grafana.zayenha.app  (user: admin / pass: ad
 echo "  Jaeger:       https://qatra-jaeger.zayenha.app"
 echo "  Redis:        https://qatra-redis.zayenha.app"
 echo "  pgAdmin:      https://qatra-pg.zayenha.app  (user: admin@zayenha.app / pass: admin)"
+echo "  Dashboard:    https://qatra-k8s.zayenha.app"
+echo ""
+echo "  Dashboard login token:"
+echo "    kubectl -n kubernetes-dashboard create token admin-user"
 echo ""
 echo "  Prometheus (internal):"
 echo "    kubectl port-forward -n qatra svc/prometheus 9090:9090"
@@ -144,6 +169,7 @@ echo "    - qatra-grafana.zayenha.app"
 echo "    - qatra-jaeger.zayenha.app"
 echo "    - qatra-redis.zayenha.app"
 echo "    - qatra-pg.zayenha.app"
+echo "    - qatra-k8s.zayenha.app"
 echo ""
 echo "  Check status:"
 echo "    kubectl get pods -n qatra"
