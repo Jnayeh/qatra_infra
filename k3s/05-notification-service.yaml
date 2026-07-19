@@ -17,6 +17,8 @@ data:
   SPRING_MAIN_ALLOW_BEAN_DEFINITION_OVERRIDING: "true"
 
   CORS_ALLOWED_ORIGINS: https://qatra-app.zayenha.app,https://qatra-api.zayenha.app,https://qatra-ws.zayenha.app
+
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://jaeger:4318
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -71,4 +73,4 @@ spec:
       targetPort: 8082
     - name: ws
       port: 8081
-      targetPort: 8081
+      targetPort: 8082

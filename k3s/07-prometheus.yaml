@@ -22,7 +22,7 @@ data:
           - targets: ['notification-service:8082']
       - job_name: 'kafka'
         static_configs:
-          - targets: ['kafka-0.kafka.qatra.svc.cluster.local:9308']
+          - targets: ['kafka-0.kafka.qatra.svc.cluster.local:9092']
       - job_name: 'redis'
         static_configs:
           - targets: ['redis:6379']

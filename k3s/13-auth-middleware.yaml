@@ -8,7 +8,7 @@ stringData:
   auth: |
     admin:{SHA}0DPiKuNIrr5DUM/zqzigLKa4gaY=
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: monitoring-basic-auth
