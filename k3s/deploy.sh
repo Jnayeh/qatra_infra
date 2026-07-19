@@ -4,6 +4,8 @@ set -e
 NAMESPACE="qatra"
 K3S_DIR="$(cd "$(dirname "$0")" && pwd)"
 
+export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+
 echo "============================================"
 echo "  Qatra k3s Deployment"
 echo "============================================"
@@ -125,14 +127,11 @@ k3s kubectl apply -f "$K3S_DIR/12-ingress.yaml"
 echo ""
 echo "[8/8] Deploying Kubernetes Dashboard..."
 
-echo "  -> Adding Helm repo..."
-helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
-helm repo update
-
-echo "  -> Installing dashboard via Helm..."
-helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard \
-  --create-namespace --namespace kubernetes-dashboard \
-  --set app.ingress.enabled=false
+echo "  -> Installing Kubernetes Dashboard..."
+curl -LO https://github.com/kubernetes-retired/dashboard/releases/download/kubernetes-dashboard-7.14.0/kubernetes-dashboard-7.14.0.tgz
+helm upgrade --install kubernetes-dashboard kubernetes-dashboard-7.14.0.tgz \
+  --create-namespace --namespace kubernetes-dashboard
+rm -f kubernetes-dashboard-7.14.0.tgz
 
 echo "  -> Applying RBAC and IngressRoute..."
 k3s kubectl apply -f "$K3S_DIR/14-kubernetes-dashboard.yaml"

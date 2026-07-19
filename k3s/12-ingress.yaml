@@ -93,7 +93,7 @@ spec:
       kind: Rule
       services:
         - name: redisinsight
-          port: 8001
+          port: 5540
       middlewares:
         - name: monitoring-basic-auth
           namespace: qatra
@@ -113,7 +113,7 @@ spec:
       kind: Rule
       services:
         - name: pgadmin
-          port: 80
+          port: 5050
       middlewares:
         - name: monitoring-basic-auth
           namespace: qatra

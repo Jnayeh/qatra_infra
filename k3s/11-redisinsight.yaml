@@ -17,7 +17,7 @@ spec:
         - name: redisinsight
           image: redis/redisinsight:latest
           ports:
-            - containerPort: 8001
+            - containerPort: 5540
           env:
             - name: RI_REDIS_HOST
               value: redis
@@ -26,13 +26,13 @@ spec:
           readinessProbe:
             httpGet:
               path: /
-              port: 8001
+              port: 5540
             initialDelaySeconds: 15
             periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /
-              port: 8001
+              port: 5540
             initialDelaySeconds: 30
             periodSeconds: 30
 ---
@@ -45,5 +45,5 @@ spec:
   selector:
     app: redisinsight
   ports:
-    - port: 8001
-      targetPort: 8001
+    - port: 5540
+      targetPort: 5540
