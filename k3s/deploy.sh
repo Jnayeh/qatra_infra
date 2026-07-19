@@ -99,13 +99,9 @@ echo "[5/8] Deploying application services..."
 
 echo "  -> Donation Service..."
 k3s kubectl apply -f "$K3S_DIR/04-donation-service.yaml"
-echo "  -> Waiting for Donation Service..."
-k3s kubectl wait --for=condition=ready pod -l app=donation-service -n $NAMESPACE --timeout=180s
 
 echo "  -> Notification Service..."
 k3s kubectl apply -f "$K3S_DIR/05-notification-service.yaml"
-echo "  -> Waiting for Notification Service..."
-k3s kubectl wait --for=condition=ready pod -l app=notification-service -n $NAMESPACE --timeout=180s
 
 echo ""
 echo "[6/8] Deploying monitoring stack..."
