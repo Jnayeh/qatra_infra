@@ -18,6 +18,14 @@ subjects:
     namespace: kubernetes-dashboard
 ---
 apiVersion: traefik.io/v1alpha1
+kind: ServersTransport
+metadata:
+  name: skipverify
+  namespace: kubernetes-dashboard
+spec:
+  insecureSkipVerify: true
+---
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: kubernetes-dashboard
@@ -32,9 +40,7 @@ spec:
         - name: kubernetes-dashboard-kong-proxy
           port: 443
           scheme: https
-      middlewares:
-        - name: monitoring-basic-auth
-          namespace: qatra
+          serversTransport: skipverify
   tls:
     certResolver: letsencrypt
 
