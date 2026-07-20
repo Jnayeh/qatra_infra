@@ -17,7 +17,7 @@ spec:
         - name: pgadmin
           image: dpage/pgadmin4:latest
           ports:
-            - containerPort: 5050
+            - containerPort: 80
           env:
             - name: PGADMIN_DEFAULT_EMAIL
               value: admin@zayenha.app
@@ -25,18 +25,16 @@ spec:
               value: admin
             - name: PGADMIN_CONFIG_SERVER_MODE
               value: "True"
-            - name: PGADMIN_CONFIG_DEFAULT_SERVER
-              value: "5050"
           readinessProbe:
             httpGet:
               path: /misc/ping
-              port: 5050
+              port: 80
             initialDelaySeconds: 15
             periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /misc/ping
-              port: 5050
+              port: 80
             initialDelaySeconds: 30
             periodSeconds: 30
 ---
@@ -50,4 +48,4 @@ spec:
     app: pgadmin
   ports:
     - port: 5050
-      targetPort: 5050
+      targetPort: 80
