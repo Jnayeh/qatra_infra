@@ -26,7 +26,7 @@ data:
 
   JWT_SECRET: QatraSecretKeyMustBeAtLeast256BitsLongForHS256AlgorithmMinimum
 
-  CORS_ALLOWED_ORIGINS: https://qatra-app.zayenha.app,https://qatra-api.zayenha.app,https://qatra-ws.zayenha.app
+  CORS_ALLOWED_ORIGINS: https://qatra.zayenha.app,https://qtra-api.zayenha.app,https://qtra-ws.zayenha.app
 
   OTEL_SERVICE_NAME: donation-service
   OTEL_TRACES_SAMPLER: parentbased_traceidratio

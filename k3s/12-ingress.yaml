@@ -8,14 +8,14 @@ spec:
     - websecure
   routes:
 
-    - match: Host(`qatra-api.zayenha.app`) && PathPrefix(`/api/v1/notifications`)
+    - match: Host(`qtra-api.zayenha.app`) && PathPrefix(`/api/v1/notifications`)
       kind: Rule
       priority: 10
       services:
         - name: notification-service
           port: 8082
 
-    - match: Host(`qatra-api.zayenha.app`) && PathPrefix(`/api/v1`)
+    - match: Host(`qtra-api.zayenha.app`) && PathPrefix(`/api/v1`)
       kind: Rule
       services:
         - name: donation-service
@@ -32,7 +32,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`qatra-ws.zayenha.app`) && PathPrefix(`/ws`)
+    - match: Host(`qtra-ws.zayenha.app`) && PathPrefix(`/ws`)
       kind: Rule
       services:
         - name: notification-service
@@ -49,7 +49,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`qatra-grafana.zayenha.app`)
+    - match: Host(`qtra-grafana.zayenha.app`)
       kind: Rule
       services:
         - name: grafana
@@ -69,7 +69,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`qatra-jaeger.zayenha.app`)
+    - match: Host(`qtra-jaeger.zayenha.app`)
       kind: Rule
       services:
         - name: jaeger
@@ -89,7 +89,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`qatra-redis.zayenha.app`)
+    - match: Host(`qtra-redis.zayenha.app`)
       kind: Rule
       services:
         - name: redisinsight
@@ -109,7 +109,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`qatra-pg.zayenha.app`)
+    - match: Host(`qtra-pg.zayenha.app`)
       kind: Rule
       services:
         - name: pgadmin
@@ -119,5 +119,3 @@ spec:
           namespace: qatra
   tls:
     certResolver: letsencrypt
-
-

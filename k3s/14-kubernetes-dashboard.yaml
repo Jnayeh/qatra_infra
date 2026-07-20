@@ -26,7 +26,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: Host(`qatra-k8s.zayenha.app`)
+    - match: Host(`qatra-k3s.zayenha.app`)
       kind: Rule
       services:
         - name: kubernetes-dashboard-kong-proxy
