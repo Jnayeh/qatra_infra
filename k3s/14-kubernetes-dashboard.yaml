@@ -16,4 +16,25 @@ subjects:
   - kind: ServiceAccount
     name: admin-user
     namespace: kubernetes-dashboard
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: kubernetes-dashboard
+  namespace: kubernetes-dashboard
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`qatra-k8s.zayenha.app`)
+      kind: Rule
+      services:
+        - name: kubernetes-dashboard-kong-proxy
+          port: 443
+          scheme: https
+      middlewares:
+        - name: monitoring-basic-auth
+          namespace: qatra
+  tls:
+    certResolver: letsencrypt
 
